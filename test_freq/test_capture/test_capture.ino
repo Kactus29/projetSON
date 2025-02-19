@@ -3,6 +3,7 @@
 #include <Wire.h>
 #include <SPI.h>
 #include <SD.h>
+
 //---------------------------------------------------------------------------------------
 #include "guitar_e2_note.h"
 #include "guitar_a2_note.h"
@@ -28,12 +29,14 @@ AudioAmplifier            amp;                            // Amplificateur audio
 AudioConnection patchCord1(in, 0, amp, 0);                // Connexion entre l'entrée audio et l'amplificateur
 AudioConnection patchCord2(amp, 0, notefreq, 0);          // Connexion entre l'amplificateur et l'analyseur de fréquence
 AudioConnection patchCord3(wav_note, 0, mixer, 0);        // Connexion entre l'instrument simulé et le mélangeur
-AudioConnection patchCorwd4(mixer, 0, dac, 0);            // Connexion entre le mélangeur et le casque audio
+AudioConnection patchCord4(mixer, 0, dac, 0);             // Connexion entre le mélangeur et le casque audio
 AudioConnection patchCord5(mixer, 0, notefreq, 0);        // Connexion entre le mélangeur et l'analyseur de fréquence
 AudioConnection patchCord6(in, 0, peak, 0);               // Connexion entre l'entrée audio et l'analyseur d'amplitude
 //---------------------------------------------------------------------------------------
 IntervalTimer playNoteTimer;
+std::vector<float> capturedNotes;
 
+// Fonction tirée de examples/04.Audio/AnalyzeNoteFrequency
 void playNote(void) {
   if (!wav_note.isPlaying()) {
     // Uncomment one of these sounds to test notefreq
@@ -52,9 +55,8 @@ void playNote(void) {
   }
 }
 
-void setup() {
-  // Initialiser la communication série
-  Serial.begin(9600);
+// Fonction pour initialiser le microphone
+void initMicrophone() {
   // Initialiser la mémoire audio
   AudioMemory(30);
   // Démarrer l'analyseur de fréquence avec un seuil de 0.15
@@ -66,12 +68,15 @@ void setup() {
   playNoteTimer.begin(playNote, 1000);
 }
 
-void loop() {
+// Fonction pour capturer une note jouée
+void captureNote() {
   // Vérifier si une nouvelle fréquence est disponible
   if (notefreq.available()) {
     // Lire la fréquence détectée
     float frequency = notefreq.read();
     float probability = notefreq.probability();
+    // Ajouter la fréquence capturée à la liste
+    capturedNotes.push_back(frequency);
     // Afficher la fréquence et la probabilité sur la console série
     Serial.print("Fréquence détectée : ");
     Serial.print(frequency);
@@ -81,6 +86,24 @@ void loop() {
     // Afficher un message si aucune fréquence n'est disponible
     Serial.println("Aucune fréquence détectée.");
   }
+}
+
+// Fonction pour retourner la liste des notes capturées
+std::vector<float> getCapturedNotes() {
+  return capturedNotes;
+}
+
+void setup() {
+  // Initialiser la communication série
+  Serial.begin(9600);
+  // Initialiser le microphone
+  initMicrophone();
+}
+
+void loop() {
+  // Capturer une note jouée
+  captureNote();
   // Ajouter un délai pour éviter de saturer la console série
   delay(100);
+  println(capturedNotes);
 }
