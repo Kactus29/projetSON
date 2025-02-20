@@ -4,6 +4,7 @@
 
 IntervalTimer captureTimer;
 bool capturing = false;
+char filename[32]; // Buffer pour stocker le nom du fichier
 
 void setup() {
   // Initialiser la communication série
@@ -34,9 +35,17 @@ void loop() {
         Serial.println(note);
       }
     } else if (command == 'w') { // write melody to SD
-      storeMelody(capturedNotes, "melody.txt");
+      Serial.println("Entrez le nom du fichier (avec extension .csv) :");
+      while (!Serial.available()) {}
+      Serial.readBytesUntil('\n', filename, sizeof(filename));
+      filename[sizeof(filename) - 1] = '\0'; // Assurez-vous que le nom du fichier est terminé par un caractère nul
+      storeMelody(capturedNotes, filename);
     } else if (command == 'r') { // read melody from SD
-      std::vector<float> melody = loadMelody("melody.txt");
+      Serial.println("Entrez le nom du fichier (avec extension .csv) :");
+      while (!Serial.available()) {}
+      Serial.readBytesUntil('\n', filename, sizeof(filename));
+      filename[sizeof(filename) - 1] = '\0'; // Assurez-vous que le nom du fichier est terminé par un caractère nul
+      std::vector<float> melody = loadMelody(filename);
       for (float note : melody) {
         Serial.println(note);
       }
