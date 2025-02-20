@@ -8,4 +8,6 @@ void initMicrophone();
 void captureNote();
 std::vector<float> getCapturedNotes();
 
+extern std::vector<float> capturedNotes;
+
 #endif // CAPTURE_AUDIO_H
