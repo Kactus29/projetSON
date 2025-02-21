@@ -14,7 +14,6 @@
 void initStorage() {
   Sd2Card card;
   File melodyFile;
-  char buffer[512];
   boolean status;
 
   while (!Serial) {
@@ -65,10 +64,10 @@ void initStorage() {
  */
 void storeMelody(const std::vector<float>& melody, const char* filename) {
   File file = SD.open(filename, FILE_WRITE);
-//   if (!file) {
-//     Serial.println("Erreur d'ouverture du fichier pour l'écriture");
-//     return;
-//   }
+  if (!file) {
+    Serial.println("Erreur d'ouverture du fichier pour l'écriture");
+    return;
+  }
   for (float note : melody) {
     file.println(note);
   }
