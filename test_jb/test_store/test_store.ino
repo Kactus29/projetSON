@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include "CaptureAudio.h"
 #include "StoreMelody.h"
+#include "CompareMusic.h"
 
 IntervalTimer captureTimer;
 bool capturing = false;
@@ -54,6 +55,8 @@ void loop() {
       for (String melody : melodies) {
         Serial.println(melody);
       }
+    } else if (command == 'c') {
+      compareMusic("musique.csv");
     }
   }
 }
