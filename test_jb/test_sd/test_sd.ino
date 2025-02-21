@@ -8,7 +8,6 @@
 void setup() {
   Sd2Card card;
   File melodyFile;
-  char buffer[512];
   boolean status;
 
   while (!Serial) {
