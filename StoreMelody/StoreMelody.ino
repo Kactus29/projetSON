@@ -3,16 +3,15 @@
 #include "StoreMelody.h"
 
 IntervalTimer captureTimer;
-bool capturing = false;
+bool capturing = false; // Indique si la capture des notes est en cours
+std::vector<float> capturedNotes; // Vecteur pour stocker les notes capturées
 char filename[32]; // Buffer pour stocker le nom du fichier
 
 void setup() {
-  // Initialiser la communication série
-  Serial.begin(9600);
-  // Initialiser le microphone
-  initMicrophone();
   // Initialiser le stockage
   initStorage();
+  // Initialiser le microphone
+  initMicrophone();
 }
 
 void loop() {
@@ -34,17 +33,15 @@ void loop() {
       for (float note : notes) {
         Serial.println(note);
       }
-    } else if (command == 'w') { // write melody to SD
-      Serial.println("Entrez le nom du fichier (avec extension .csv) :");
+    } else if (command == 'w') {  // write melody to SD
       while (!Serial.available()) {}
       Serial.readBytesUntil('\n', filename, sizeof(filename));
-      filename[sizeof(filename) - 1] = '\0'; // Assurez-vous que le nom du fichier est terminé par un caractère nul
+      filename[sizeof(filename) - 1] = '\0';
       storeMelody(capturedNotes, filename);
     } else if (command == 'r') { // read melody from SD
-      Serial.println("Entrez le nom du fichier (avec extension .csv) :");
       while (!Serial.available()) {}
       Serial.readBytesUntil('\n', filename, sizeof(filename));
-      filename[sizeof(filename) - 1] = '\0'; // Assurez-vous que le nom du fichier est terminé par un caractère nul
+      filename[sizeof(filename) - 1] = '\0';
       std::vector<float> melody = loadMelody(filename);
       for (float note : melody) {
         Serial.println(note);
