@@ -2,7 +2,7 @@
 #define COMPARE_MUSIC_H
 
 #include <vector>
-#include <String.h>
+#include <Arduino.h>
 
 bool compareMelodies(const std::vector<float>& capturedNotes, const std::vector<float>& storedMelody);
 String findMatchingMelody(const std::vector<float>& capturedNotes);
