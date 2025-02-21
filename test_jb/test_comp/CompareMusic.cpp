@@ -1,7 +1,5 @@
 #include "CompareMusic.h"
 #include "StoreMelody.h"
-#include <SD.h>
-#include <vector>
 #include <numeric>
 #include <cmath>
 #include <Arduino.h>
