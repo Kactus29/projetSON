@@ -21,7 +21,7 @@ std::vector<std::pair<String, float>> findMatchingMelody(const std::vector<float
         std::vector<float> storedMelody = loadMelody(melodyFile.c_str());
         if (storedMelody.empty()) continue;
 
-        float score = calculateCorrelation(capturedNotes, storedMelody);
+        float score = calculateDTW(capturedNotes, storedMelody);
         results.push_back(std::make_pair(melodyFile, score));
     }
 
@@ -44,4 +44,20 @@ float calculateCorrelation(const std::vector<float>& a, const std::vector<float>
     }
 
     return sum_ab / sqrt(sum_a2 * sum_b2);
+}
+
+float calculateDTW(const std::vector<float>& a, const std::vector<float>& b) {
+    int n = a.size();
+    int m = b.size();
+    std::vector<std::vector<float>> dtw(n + 1, std::vector<float>(m + 1, std::numeric_limits<float>::max()));
+    dtw[0][0] = 0;
+
+    for (int i = 1; i <= n; ++i) {
+        for (int j = 1; j <= m; ++j) {
+            float cost = std::abs(a[i - 1] - b[j - 1]);
+            dtw[i][j] = cost + std::min({dtw[i - 1][j], dtw[i][j - 1], dtw[i - 1][j - 1]});
+        }
+    }
+
+    return dtw[n][m];
 }

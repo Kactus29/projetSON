@@ -4,7 +4,7 @@
 #include "include.h"
 
 bool compareMelodies(const std::vector<float>& capturedNotes, const std::vector<float>& storedMelody);
-String findMatchingMelody(const std::vector<float>& capturedNotes);
+std::vector<std::pair<String, float>> findMatchingMelody(const std::vector<float>& capturedNotes);
 float calculateCorrelation(const std::vector<float>& a, const std::vector<float>& b);
 
 #endif // COMPARE_MUSIC_H

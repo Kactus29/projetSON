@@ -53,10 +53,15 @@ void handleCommand() {
       while (!Serial.available()) {}
       Serial.readBytesUntil('\n', filename, sizeof(filename));
       filename[sizeof(filename) - 1] = '\0';
-      String bestMatch = findMatchingMelody(loadMelody(filename));
-      Serial.print("La mélodie la plus similaire est : ");
-      Serial.println(bestMatch);
-      
+      std::vector<std::pair<String, float>> bestMatch = findMatchingMelody(loadMelody(filename));
+      Serial.println("La mélodie la plus similaire est : ");
+      for (const auto& match : bestMatch) {
+        Serial.print("Fichier: ");
+        Serial.print(match.first);
+        Serial.print(" | Score: ");
+        Serial.println(match.second);
+      }
+
     } else if (command == 'd') { // delete file
       while (!Serial.available()) {}
       Serial.readBytesUntil('\n', filename, sizeof(filename));
