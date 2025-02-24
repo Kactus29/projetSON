@@ -9,12 +9,12 @@ bool compareMelodies(const std::vector<float>& capturedNotes, const std::vector<
     return correlation > 0.8; // Seuil de corrélation pour considérer les mélodies comme correspondantes
 }
 
-std::vector<std::pair<String, float>> findMatchingMelody(const std::vector<float>& capturedNotes) {
-    std::vector<String> storedMelodies = getStoredMelodies(directory);
+std::vector<std::pair<String, float>>  findMatchingMelody(const std::vector<float>& capturedNotes) {
+    std::vector<String> storedMelodies = getStoredMelodies();
     std::vector<std::pair<String, float>> results;
 
     for (String melodyFile : storedMelodies) {
-        std::vector<float> storedMelody = loadMelody(directory, melodyFile.c_str());
+        std::vector<float> storedMelody = loadMelody(melodyFile.c_str());
         if (storedMelody.empty() || storedMelody == capturedNotes) continue; // Skip if the melody is the same as captured
 
         float score = calculateCorrelation(capturedNotes, storedMelody);

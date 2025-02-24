@@ -58,9 +58,13 @@ void loop() {
       while (!Serial.available()) {}
       Serial.readBytesUntil('\n', filename, sizeof(filename));
       filename[sizeof(filename) - 1] = '\0';
-      String bestMatch = findMatchingMelody(loadMelody(filename));
-      Serial.print("La mélodie la plus similaire est : ");
-      Serial.println(bestMatch);
+      auto results = findMatchingMelody(loadMelody(filename));
+      for (const auto& result : results) {
+        Serial.print("Mélodie : ");
+        Serial.print(result.first);
+        Serial.print(" | Score de corrélation : ");
+        Serial.println(result.second);
+      }
     } else if (command == 'd') { // delete file
       Serial.println("Entrez le nom du fichier à supprimer (avec extension .csv) :");
       while (!Serial.available()) {}

@@ -35,14 +35,20 @@ void initMicrophone() {
  * puis ajoute la fréquence capturée à la liste des notes capturées. Affiche également la fréquence et la probabilité sur la console série.
  */
 void captureNote() {
-  if (notefreq.available()) {
-    float frequency = notefreq.read();
-    float probability = notefreq.probability();
-    capturedNotes.push_back(frequency);
-    Serial.print("Fréquence détectée : ");
-    Serial.print(frequency);
-    Serial.print(" Hz | Probabilité : ");
-    Serial.println(probability);
+  static unsigned long lastCaptureTime = 0;
+  unsigned long currentTime = millis();
+  
+  if (currentTime - lastCaptureTime >= 10) {
+    if (notefreq.available()) {
+      float frequency = notefreq.read();
+      float probability = notefreq.probability();
+      capturedNotes.push_back(frequency);
+      Serial.print("Fréquence détectée : ");
+      Serial.print(frequency);
+      Serial.print(" Hz | Probabilité : ");
+      Serial.println(probability);
+    }
+    lastCaptureTime = currentTime;
   }
 }
 
