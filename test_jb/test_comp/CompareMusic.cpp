@@ -61,3 +61,5 @@ float calculateDTW(const std::vector<float>& a, const std::vector<float>& b) {
 
     return dtw[n][m];
 }
+
+
