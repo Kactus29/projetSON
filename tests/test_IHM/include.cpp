@@ -6,4 +6,4 @@ IntervalTimer captureTimer;
 bool capturing = false;
 char filename[128];
 char directory[128];
-char path[256];
+char path[256] = "";

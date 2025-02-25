@@ -91,3 +91,29 @@ std::vector<String> getStoredMelodies(const char* path) {
   }
   return melodies;
 }
+
+/**
+ * @brief Retourne la liste des dossiers stockés dans un répertoire sur la carte SD.
+ * 
+ * @param path Chemin du répertoire à partir duquel lister les dossiers stockés.
+ * @return std::vector<String> Vecteur contenant les noms des dossiers stockés.
+ */
+std::vector<String> getStoredDirectories(const char* path) {
+  std::vector<String> directories;
+  File dir = SD.open(path);
+  if (!dir) {
+    Serial.println("Erreur d'ouverture du répertoire");
+    return directories;
+  }
+  while (true) {
+    File entry = dir.openNextFile();
+    if (!entry) {
+      break;
+    }
+    if (entry.isDirectory()) {
+      directories.push_back(entry.name());
+    }
+    entry.close();
+  }
+  return directories;
+}
