@@ -1,11 +1,6 @@
 #include "include.h"
 
 void setup() {
-  // Initialiser le port série
-  Serial.begin(9600);
-  while (!Serial) {
-    delay(10); // Attendre que le port série soit prêt
-  }
 
   // Afficher les commandes disponibles
   displayCommands();
