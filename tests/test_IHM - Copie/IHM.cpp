@@ -2,20 +2,6 @@
 
 unsigned long startTime = 0; // Variable to store le start time
 
-// Function to display available commands
-void displayCommands() {
-  Serial.println("Commandes disponibles :");
-  Serial.println("record : Commencer une capture de son");
-  Serial.println("stop : Arrêter une capture de son");
-  Serial.println("save : Enregistrer la mélodie capturée sur la carte SD");
-  Serial.println("load : Charger une mélodie depuis la carte SD");
-  Serial.println("ls : Lister les mélodies et répertoires stockés");
-  Serial.println("compare : Comparer la mélodie capturée avec celles stockées");
-  Serial.println("delete : Supprimer un fichier de la carte SD");
-  Serial.println("dir : Changer de répertoire");
-  Serial.println("up : Remonter d'un répertoire");
-}
-
 void handleCommand() {
   char filename[64] = "";
   char tempPath[512];
@@ -87,25 +73,6 @@ void handleCommand() {
         Serial.print(match.first);
         Serial.print(" | Score: ");
         Serial.println(match.second);
-      }
-
-      if (!bestMatch.empty()) {
-        // Trouver la mélodie avec le meilleur score
-        auto bestMatchIt = std::max_element(bestMatch.begin(), bestMatch.end(), 
-                                            [](const std::pair<String, float>& a, const std::pair<String, float>& b) {
-                                              return a.second < b.second;
-                                            });
-        String bestMatchFile = bestMatchIt->first;
-        Serial.print("Meilleure correspondance trouvée : ");
-        Serial.println(bestMatchFile);
-
-        std::vector<float> bestMelody = loadMelody(currentPath.c_str(), bestMatchFile.c_str());
-        Serial.println("Contenu du fichier :");
-        for (float note : bestMelody) {
-          Serial.println(note);
-        }
-
-        playMelody(bestMelody);
       }
 
     } else if (command == "delete") { // delete file
