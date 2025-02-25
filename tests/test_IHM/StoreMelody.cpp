@@ -1,4 +1,4 @@
-#include "StoreMelody.h"
+#include "include.h"
 
 #define SDCARD_CS_PIN 10
 
@@ -26,12 +26,12 @@ void initStorage() {
  * @brief Stocke une mélodie dans un fichier sur la carte SD.
  * 
  * @param melody Vecteur contenant les fréquences des notes de la mélodie.
- * @param directory Répertoire dans lequel stocker la mélodie.
+ * @param path Chemin du répertoire dans lequel stocker la mélodie.
  * @param filename Nom du fichier dans lequel stocker la mélodie.
  */
-void storeMelody(const std::vector<float>& melody, const char* directory, const char* filename) {
-  String path = String(directory) + "/" + filename;
-  File file = SD.open(path.c_str(), FILE_WRITE);
+void storeMelody(const std::vector<float>& melody, const char* path, const char* filename) {
+  String fullPath = String(path) + "/" + filename;
+  File file = SD.open(fullPath.c_str(), FILE_WRITE);
   if (!file) {
     Serial.println("Erreur d'ouverture du fichier pour l'écriture");
     return;
@@ -46,14 +46,14 @@ void storeMelody(const std::vector<float>& melody, const char* directory, const 
 /**
  * @brief Charge une mélodie depuis un fichier sur la carte SD.
  * 
- * @param directory Répertoire à partir duquel charger la mélodie.
+ * @param path Chemin du répertoire à partir duquel charger la mélodie.
  * @param filename Nom du fichier à partir duquel charger la mélodie.
  * @return std::vector<float> Vecteur contenant les fréquences des notes de la mélodie chargée.
  */
-std::vector<float> loadMelody(const char* directory, const char* filename) {
+std::vector<float> loadMelody(const char* path, const char* filename) {
   std::vector<float> melody;
-  String path = String(directory) + "/" + filename;
-  File file = SD.open(path.c_str());
+  String fullPath = String(path) + "/" + filename;
+  File file = SD.open(fullPath.c_str());
   if (!file) {
     Serial.println("Erreur d'ouverture du fichier pour la lecture");
     return melody;
@@ -69,12 +69,12 @@ std::vector<float> loadMelody(const char* directory, const char* filename) {
 /**
  * @brief Retourne la liste des mélodies stockées dans un répertoire sur la carte SD.
  * 
- * @param directory Répertoire à partir duquel lister les mélodies stockées.
+ * @param path Chemin du répertoire à partir duquel lister les mélodies stockées.
  * @return std::vector<String> Vecteur contenant les noms des fichiers des mélodies stockées.
  */
-std::vector<String> getStoredMelodies(const char* directory) {
+std::vector<String> getStoredMelodies(const char* path) {
   std::vector<String> melodies;
-  File dir = SD.open(directory);
+  File dir = SD.open(path);
   if (!dir) {
     Serial.println("Erreur d'ouverture du répertoire");
     return melodies;

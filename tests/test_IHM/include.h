@@ -4,11 +4,21 @@
 #include <Arduino.h>
 #include <Audio.h>
 #include <cmath>
+#include <cstdio>
+#include <cstring>
 #include <numeric>
 #include <SD.h>
 #include <SPI.h>
 #include <String.h>
 #include <vector>
+
+// Declare the variables as extern
+extern std::vector<float> capturedNotes;
+extern IntervalTimer captureTimer;
+extern bool capturing;
+extern char filename[128];
+extern char directory[128];
+extern char path[256];
 
 #include "CaptureAudio.h"
 #include "StoreMelody.h"

@@ -8,9 +8,6 @@ AudioAnalyzeNoteFrequency notefreq;     // Analyseur de fréquence de note
 //---------------------------------------------------------------------------------------
 AudioConnection patchCord1(in, 0, amp, 0);        // Connexion entre l'entrée audio et l'amplificateur
 AudioConnection patchCord2(amp, 0, notefreq, 0);  // Connexion entre l'amplificateur et l'analyseur de fréquence
-//---------------------------------------------------------------------------------------
-std::vector<float> capturedNotes; // Définition de la variable
-//---------------------------------------------------------------------------------------
 
 /**
  * @brief Initialise le microphone et les composants audio.

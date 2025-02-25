@@ -1,5 +1,14 @@
 #include "include.h"
 
+//---------------------------------------------------------------------------------------
+
+/**
+ * @brief Compare deux mélodies pour vérifier si elles correspondent.
+ * 
+ * @param capturedNotes Notes capturées par le microphone.
+ * @param storedMelody Mélodie stockée à comparer.
+ * @return true si les mélodies correspondent, false sinon.
+ */
 bool compareMelodies(const std::vector<float>& capturedNotes, const std::vector<float>& storedMelody) {
     if (capturedNotes.size() != storedMelody.size()) {
         return false;
@@ -9,12 +18,18 @@ bool compareMelodies(const std::vector<float>& capturedNotes, const std::vector<
     return correlation > 0.8; // Seuil de corrélation pour considérer les mélodies comme correspondantes
 }
 
-std::vector<std::pair<String, float>>  findMatchingMelody(const std::vector<float>& capturedNotes) {
-    std::vector<String> storedMelodies = getStoredMelodies();
+/**
+ * @brief Trouve les mélodies stockées qui correspondent aux notes capturées.
+ * 
+ * @param capturedNotes Notes capturées par le microphone.
+ * @return std::vector<std::pair<String, float>> Liste des mélodies correspondantes avec leur score de corrélation.
+ */
+std::vector<std::pair<String, float>> findMatchingMelody(const std::vector<float>& capturedNotes) {
+    std::vector<String> storedMelodies = getStoredMelodies(path);
     std::vector<std::pair<String, float>> results;
 
     for (String melodyFile : storedMelodies) {
-        std::vector<float> storedMelody = loadMelody(melodyFile.c_str());
+        std::vector<float> storedMelody = loadMelody(path, melodyFile.c_str());
         if (storedMelody.empty() || storedMelody == capturedNotes) continue; // Skip if the melody is the same as captured
 
         float score = calculateCorrelation(capturedNotes, storedMelody);
@@ -24,6 +39,13 @@ std::vector<std::pair<String, float>>  findMatchingMelody(const std::vector<floa
     return results;
 }
 
+/**
+ * @brief Calcule la corrélation entre deux vecteurs de fréquences.
+ * 
+ * @param a Premier vecteur de fréquences.
+ * @param b Deuxième vecteur de fréquences.
+ * @return float Valeur de la corrélation entre les deux vecteurs.
+ */
 float calculateCorrelation(const std::vector<float>& a, const std::vector<float>& b) {
     int n = a.size();
     int m = b.size();
