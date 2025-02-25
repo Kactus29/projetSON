@@ -30,7 +30,7 @@ void initStorage() {
  * @param filename Nom du fichier dans lequel stocker la mélodie.
  */
 void storeMelody(const std::vector<float>& melody, const char* path, const char* filename) {
-  String fullPath = String(path) + "/" + filename;
+  String fullPath = String("/") + String(path) + "/" + filename;
   File file = SD.open(fullPath.c_str(), FILE_WRITE);
   if (!file) {
     Serial.println("Erreur d'ouverture du fichier pour l'écriture");
@@ -52,7 +52,7 @@ void storeMelody(const std::vector<float>& melody, const char* path, const char*
  */
 std::vector<float> loadMelody(const char* path, const char* filename) {
   std::vector<float> melody;
-  String fullPath = String(path) + "/" + filename;
+  String fullPath = String("/") + String(path) + "/" + filename;
   File file = SD.open(fullPath.c_str());
   if (!file) {
     Serial.println("Erreur d'ouverture du fichier pour la lecture");
@@ -74,7 +74,8 @@ std::vector<float> loadMelody(const char* path, const char* filename) {
  */
 std::vector<String> getStoredMelodies(const char* path) {
   std::vector<String> melodies;
-  File dir = SD.open(path);
+  String fullPath = String("/") + String(path);
+  File dir = SD.open(fullPath.c_str());
   if (!dir) {
     Serial.println("Erreur d'ouverture du répertoire");
     return melodies;
@@ -100,7 +101,8 @@ std::vector<String> getStoredMelodies(const char* path) {
  */
 std::vector<String> getStoredDirectories(const char* path) {
   std::vector<String> directories;
-  File dir = SD.open(path);
+  String fullPath = String("/") + String(path);
+  File dir = SD.open(fullPath.c_str());
   if (!dir) {
     Serial.println("Erreur d'ouverture du répertoire");
     return directories;

@@ -5,7 +5,7 @@ unsigned long startTime = 0; // Variable to store le start time
 void handleCommand() {
   char filename[64] = "";
   char tempPath[512];
-  String currentPath = "/";
+  String currentPath = "";
 
   if (Serial.available()) {
     String command = Serial.readStringUntil('\n');
@@ -104,9 +104,8 @@ void handleCommand() {
       while (!Serial.available()) {}
       Serial.readBytesUntil('\n', path, sizeof(path));
       path[sizeof(path) - 1] = '\0';
-      String newPath = currentPath;
-      if (newPath != "/") {
-        newPath += "/";
+      if (currentPath != "") {
+        currentPath += "/";
       }
       newPath += path;
       File dir = SD.open(newPath.c_str());
@@ -123,9 +122,6 @@ void handleCommand() {
       int lastSlash = currentPath.lastIndexOf('/');
       if (lastSlash != -1) {
         currentPath = currentPath.substring(0, lastSlash);
-      }
-      if (currentPath == "") {
-        currentPath = "/";
       }
       Serial.print("Chemin actuel: ");
       Serial.println(currentPath);
