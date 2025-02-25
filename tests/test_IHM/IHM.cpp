@@ -18,14 +18,12 @@ void handleCommand() {
       captureTimer.begin(captureNote, 100 * 1000); // 100 ms
       Serial.println("--------------------");
       Serial.println("Capture commencée.");
-      Serial.println("--------------------");
       
     } else if (command == "stop") {  // end capture
       capturing = false;
       captureTimer.end();
       Serial.println("--------------------");
       Serial.println("Capture terminée.");
-      Serial.println("--------------------");
       std::vector<float> notes = getCapturedNotes();
       for (float note : notes) {
         Serial.println(note);
@@ -34,7 +32,6 @@ void handleCommand() {
     } else if (command == "save") {  // write melody to SD
       Serial.println("--------------------");
       Serial.println("Entrez le nom du fichier (avec extension .csv) :");
-      Serial.println("--------------------");
       while (!Serial.available()) {}
       Serial.readBytesUntil('\n', filename, sizeof(filename));
       filename[sizeof(filename) - 1] = '\0';
@@ -44,7 +41,6 @@ void handleCommand() {
     } else if (command == "load") { // read melody from SD
       Serial.println("--------------------");
       Serial.println("Entrez le nom du fichier (avec extension .csv) :");
-      Serial.println("--------------------");
       while (!Serial.available()) {}
       Serial.readBytesUntil('\n', filename, sizeof(filename));
       filename[sizeof(filename) - 1] = '\0';
@@ -70,9 +66,9 @@ void handleCommand() {
       for (String directory : directories) {
         Serial.println(directory);
       }
-      Serial.println("--------------------");
 
     } else if (command == "compare") { // compare music
+      Serial.println("--------------------");
       Serial.println("Entrez le nom du fichier cible (avec extension .csv) :");
       while (!Serial.available()) {}
       Serial.readBytesUntil('\n', filename, sizeof(filename));
@@ -88,6 +84,7 @@ void handleCommand() {
       }
 
     } else if (command == "delete") { // delete file
+      Serial.println("--------------------");
       Serial.println("Entrez le nom du fichier à supprimer (avec extension .csv) :");
       while (!Serial.available()) {}
       Serial.readBytesUntil('\n', filename, sizeof(filename));
@@ -100,12 +97,14 @@ void handleCommand() {
       }
 
     } else if (command == "cd") { // change directory
+      Serial.println("--------------------");
       Serial.println("Entrez le nom du répertoire :");
       while (!Serial.available()) {}
       Serial.readBytesUntil('\n', path, sizeof(path));
       path[sizeof(path) - 1] = '\0';
-      if (currentPath != "") {
-        currentPath += "/";
+      String newPath = currentPath;
+      if (newPath != "") {
+        newPath += "/";
       }
       newPath += path;
       File dir = SD.open(newPath.c_str());
@@ -123,6 +122,7 @@ void handleCommand() {
       if (lastSlash != -1) {
         currentPath = currentPath.substring(0, lastSlash);
       }
+      Serial.println("--------------------");
       Serial.print("Chemin actuel: ");
       Serial.println(currentPath);
     }
