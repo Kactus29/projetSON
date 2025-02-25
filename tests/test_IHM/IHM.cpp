@@ -1,5 +1,7 @@
 #include "include.h"
 
+unsigned long startTime = 0; // Variable to store le start time
+
 void handleCommand() {
   char filename[64] = "some_file";
   char tempPath[512];
@@ -10,7 +12,8 @@ void handleCommand() {
     if (command == 's') { // start capture
       capturing = true;
       capturedNotes.clear();
-      captureTimer.begin(captureNote, 10 * 1000); // 10 ms
+      startTime = millis();
+      captureTimer.begin(captureNote, 100 * 1000); // 100 ms
       Serial.println("Capture commencée.");
       
     } else if (command == 'e') {  // end capture

@@ -8,8 +8,10 @@ AudioAnalyzeNoteFrequency notefreq;     // Analyseur de fréquence de note
 //---------------------------------------------------------------------------------------
 AudioConnection patchCord1(in, 0, amp, 0);        // Connexion entre l'entrée audio et l'amplificateur
 AudioConnection patchCord2(amp, 0, notefreq, 0);  // Connexion entre l'amplificateur et l'analyseur de fréquence
+//---------------------------------------------------------------------------------------
 
 float lastFrequency = 0.0; // Variable to store the last detected frequency
+extern unsigned long startTime; // Variable to store the start time of the melody
 
 /**
  * @brief Initialise le microphone et les composants audio.
@@ -21,6 +23,11 @@ void initMicrophone() {
   AudioMemory(30);
   notefreq.begin(0.15);
   amp.gain(5.0);
+  
+  audioShield.enable();
+  audioShield.inputSelect(AUDIO_INPUT_MIC);
+  audioShield.micGain(20); // Augmenter le gain du microphone
+  audioShield.volume(1.0);
 }
 
 /**
@@ -30,16 +37,26 @@ void initMicrophone() {
  * puis ajoute la fréquence capturée à la liste des notes capturées. Affiche également la fréquence et la probabilité sur la console série.
  * Si aucune nouvelle fréquence n'est détectée dans les 10 ms, stocke 0.
  */
-void captureNote() {
+ void captureNote() {
+  unsigned long currentTime = millis(); // Get the current time
+  unsigned long elapsedTime = currentTime - startTime; // Calculate elapsed time
+
   if (notefreq.available()) {
     lastFrequency = notefreq.read();
     float probability = notefreq.probability();
-    Serial.print("Fréquence détectée : ");
+    Serial.print("Temps écoulé : ");
+    Serial.print(elapsedTime);
+    Serial.print(" ms | Fréquence détectée : ");
     Serial.print(lastFrequency);
     Serial.print(" Hz | Probabilité : ");
     Serial.println(probability);
   } else {
     lastFrequency = 0.0; // No new frequency detected, set to 0
+    Serial.print("Temps écoulé : ");
+    Serial.print(elapsedTime);
+    Serial.print(" ms | Fréquence détectée : ");
+    Serial.print(lastFrequency);
+    Serial.println(" Hz | Probabilité : 0.0");
   }
   capturedNotes.push_back(lastFrequency);
 }
