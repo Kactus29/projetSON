@@ -16,19 +16,25 @@ void handleCommand() {
       capturedNotes.clear();
       startTime = millis();
       captureTimer.begin(captureNote, 100 * 1000); // 100 ms
+      Serial.println("--------------------");
       Serial.println("Capture commencée.");
+      Serial.println("--------------------");
       
     } else if (command == "stop") {  // end capture
       capturing = false;
       captureTimer.end();
+      Serial.println("--------------------");
       Serial.println("Capture terminée.");
+      Serial.println("--------------------");
       std::vector<float> notes = getCapturedNotes();
       for (float note : notes) {
         Serial.println(note);
       }
 
     } else if (command == "save") {  // write melody to SD
+      Serial.println("--------------------");
       Serial.println("Entrez le nom du fichier (avec extension .csv) :");
+      Serial.println("--------------------");
       while (!Serial.available()) {}
       Serial.readBytesUntil('\n', filename, sizeof(filename));
       filename[sizeof(filename) - 1] = '\0';
@@ -36,7 +42,9 @@ void handleCommand() {
       storeMelody(capturedNotes, currentPath.c_str(), filename);
 
     } else if (command == "load") { // read melody from SD
+      Serial.println("--------------------");
       Serial.println("Entrez le nom du fichier (avec extension .csv) :");
+      Serial.println("--------------------");
       while (!Serial.available()) {}
       Serial.readBytesUntil('\n', filename, sizeof(filename));
       filename[sizeof(filename) - 1] = '\0';
@@ -47,18 +55,22 @@ void handleCommand() {
       }
 
     } else if (command == "ls") { // list stored melodies and directories
+      Serial.println("--------------------");
       Serial.println("Chemin actuel :");
       Serial.println(currentPath);
+      Serial.println("--------------------");
       Serial.println("Mélodies stockées :");
       std::vector<String> melodies = getStoredMelodies(currentPath.c_str());
       for (String melody : melodies) {
         Serial.println(melody);
       }
+      Serial.println("--------------------");
       Serial.println("Dossiers disponibles :");
       std::vector<String> directories = getStoredDirectories(currentPath.c_str());
       for (String directory : directories) {
         Serial.println(directory);
       }
+      Serial.println("--------------------");
 
     } else if (command == "compare") { // compare music
       Serial.println("Entrez le nom du fichier cible (avec extension .csv) :");
@@ -87,17 +99,25 @@ void handleCommand() {
         Serial.println("Erreur lors de la suppression du fichier.");
       }
 
-    } else if (command == "dir") { // change directory
+    } else if (command == "cd") { // change directory
       Serial.println("Entrez le nom du répertoire :");
       while (!Serial.available()) {}
       Serial.readBytesUntil('\n', path, sizeof(path));
       path[sizeof(path) - 1] = '\0';
-      if (currentPath != "/") {
-        currentPath += "/";
+      String newPath = currentPath;
+      if (newPath != "/") {
+        newPath += "/";
       }
-      currentPath += path;
-      Serial.print("Chemin actuel: ");
-      Serial.println(currentPath);
+      newPath += path;
+      File dir = SD.open(newPath.c_str());
+      if (dir && dir.isDirectory()) {
+        currentPath = newPath;
+        Serial.print("Chemin actuel: ");
+        Serial.println(currentPath);
+      } else {
+        Serial.println("Le répertoire n'existe pas.");
+      }
+      dir.close();
 
     } else if (command == "up") { // move up one directory
       int lastSlash = currentPath.lastIndexOf('/');
