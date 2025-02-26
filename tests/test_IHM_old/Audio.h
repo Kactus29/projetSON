@@ -1,5 +1,5 @@
-#ifndef CAPTURE_AUDIO_H
-#define CAPTURE_AUDIO_H
+#ifndef AUDIO_H
+#define AUDIO_H
 
 #include "include.h"
 
@@ -10,4 +10,4 @@ std::vector<float> getCapturedNotes();
 void initOut();
 void playWavFile(const char* filename);
 
-#endif // CAPTURE_AUDIO_H
+#endif // AUDIO_H

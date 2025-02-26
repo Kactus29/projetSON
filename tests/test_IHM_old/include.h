@@ -21,7 +21,7 @@ extern char filename[128];
 extern char directory[128];
 extern char path[256];
 
-#include "CaptureAudio.h"
+#include "Audio.h"
 #include "StoreMelody.h"
 #include "CompareMusic.h"
 #include "IHM.h"
