@@ -3,7 +3,6 @@
 
 #include "include.h"
 
-void initWavPlayer();
 void playWavFile(const char* filename);
 
 #endif // PLAY_WAV_H

@@ -3,12 +3,13 @@
 
 #include <Arduino.h>
 #include <Audio.h>
+#include <Wire.h>
+#include <SD.h>
+#include <SPI.h>
 #include <cmath>
 #include <cstdio>
 #include <cstring>
 #include <numeric>
-#include <SD.h>
-#include <SPI.h>
 #include <String.h>
 #include <vector>
 

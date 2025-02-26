@@ -5,18 +5,6 @@
 #define SDCARD_SCK_PIN   14  // Teensy 4 ignores this, uses pin 13
 //--------------------------------------------------------------------------------------- 
 
-void setup() {
-  initStorage();
-  std::vector<String> melodies = getStoredMelodies("melodies");
-  for (String melody : melodies) {
-    Serial.println(melody);
-  }
-  std::vector<String> directories = getStoredDirectories("");
-  for (String directory : directories) {
-    Serial.println(directory);
-  }
-}
-
 /**
  * @brief Initialise le stockage sur la carte SD.
  * 
@@ -41,7 +29,7 @@ void initStorage() {
 
   init = card.init(SPI_FULL_SPEED, SDCARD_CS_PIN);
   begin = SD.begin(SDCARD_CS_PIN);
-  if (!(init && begin)) {
+  if (!init || !begin) {
     Serial.println("Échec de l'initialisation !");
     return;
   }

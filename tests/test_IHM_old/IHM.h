@@ -5,6 +5,5 @@
 
 void handleCommand();
 void displayTools();
-void playWav();
 
 #endif // IHM_H

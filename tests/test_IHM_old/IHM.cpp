@@ -126,19 +126,16 @@ void handleCommand() {
       Serial.println(currentPath);
 
     } else if (command == "play") { // play wav file
-      playWav();
+      Serial.println("Entrez le nom du fichier WAV (avec extension .wav) :");
+      while (!Serial.available()) {}
+      Serial.readBytesUntil('\n', filename, sizeof(filename));
+      filename[sizeof(filename) - 1] = '\0';
+      playWavFile(filename);
+
     } else if (command == "help") {
       displayTools();
     }
   }
-}
-
-void playWav() {
-  Serial.println("Entrez le nom du fichier WAV (avec extension .wav) :");
-  while (!Serial.available()) {}
-  Serial.readBytesUntil('\n', filename, sizeof(filename));
-  filename[sizeof(filename) - 1] = '\0';
-  playWavFile(filename);
 }
 
 void displayTools() {
