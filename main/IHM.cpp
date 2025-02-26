@@ -89,6 +89,10 @@ void handleCommand() {
         Serial.print(detectedSong);
         Serial.print(" avec un score de corrélation de ");
         Serial.println(maxScore);
+
+        // Play the detected song
+        detectedSong += ".wav"; // Append .wav extension
+        playWavFile(detectedSong.c_str());
       } else {
         Serial.println("Aucune correspondance trouvée.");
       }
