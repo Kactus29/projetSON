@@ -125,10 +125,20 @@ void handleCommand() {
       Serial.print("Chemin actuel: ");
       Serial.println(currentPath);
 
+    } else if (command == "play") { // play wav file
+      playWav();
     } else if (command == "help") {
       displayTools();
     }
   }
+}
+
+void playWav() {
+  Serial.println("Entrez le nom du fichier WAV (avec extension .wav) :");
+  while (!Serial.available()) {}
+  Serial.readBytesUntil('\n', filename, sizeof(filename));
+  filename[sizeof(filename) - 1] = '\0';
+  playWavFile(filename);
 }
 
 void displayTools() {
@@ -144,6 +154,7 @@ void displayTools() {
   Serial.println("delete - Supprime un fichier de la carte SD");
   Serial.println("dir - Change le répertoire courant");
   Serial.println("up - Remonte d'un répertoire");
+  Serial.println("play - Joue un fichier WAV depuis la carte SD");
   Serial.println("help - Affiche les commandes disponibles");
   Serial.println("-----------------------------------------------------");
   Serial.println();
