@@ -2,7 +2,7 @@
 
 void setup() {
   // Initialiser le stockage
-  initStorage();
+  setup();
   // Initialiser le microphone
   initMicrophone();
   // Initialiser le lecteur WAV

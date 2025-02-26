@@ -1,6 +1,21 @@
 #include "include.h"
+//--------------------------------------------------------------------------------------- 
+#define SDCARD_CS_PIN    10
+#define SDCARD_MOSI_PIN  7   // Teensy 4 ignores this, uses pin 11
+#define SDCARD_SCK_PIN   14  // Teensy 4 ignores this, uses pin 13
+//--------------------------------------------------------------------------------------- 
 
-#define SDCARD_CS_PIN 10
+void setup() {
+  initStorage();
+  std::vector<String> melodies = getStoredMelodies("melodies");
+  for (String melody : melodies) {
+    Serial.println(melody);
+  }
+  std::vector<String> directories = getStoredDirectories("");
+  for (String directory : directories) {
+    Serial.println(directory);
+  }
+}
 
 /**
  * @brief Initialise le stockage sur la carte SD.
@@ -8,14 +23,25 @@
  * Vérifie si la carte SD est correctement initialisée. Affiche un message d'erreur en cas d'échec.
  */
 void initStorage() {
+  Sd2Card card;
+  boolean init;
+  boolean begin;
+
   while (!Serial) {
     delay(10); // Attendre que le port série soit prêt
   }
+
+  SPI.setMOSI(SDCARD_MOSI_PIN);
+  SPI.setSCK(SDCARD_SCK_PIN);
+
   Serial.begin(9600);
   Serial.println("------------");
   Serial.println("Initialisation de la carte SD...");
   Serial.println("------------");
-  if (!SD.begin(SDCARD_CS_PIN)) {
+
+  init = card.init(SPI_FULL_SPEED, SDCARD_CS_PIN);
+  begin = SD.begin(SDCARD_CS_PIN);
+  if (!(init && begin)) {
     Serial.println("Échec de l'initialisation !");
     return;
   }
