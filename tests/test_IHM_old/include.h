@@ -24,5 +24,6 @@ extern char path[256];
 #include "StoreMelody.h"
 #include "CompareMusic.h"
 #include "IHM.h"
+#include "PlayWav.h"
 
 #endif // INCLUDE_H
