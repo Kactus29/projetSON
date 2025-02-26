@@ -5,8 +5,6 @@ void setup() {
   initStorage();
   // Initialiser le microphone
   initMicrophone();
-  // Initialiser l'audio
-  initAudio();
   // Afficher les commandes
   displayTools();
 }
