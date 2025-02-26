@@ -67,12 +67,30 @@ void handleCommand() {
       filename[sizeof(filename) - 1] = '\0';
       snprintf(tempPath, sizeof(tempPath), "%s/%s", currentPath.c_str(), filename);
       std::vector<std::pair<String, float>> bestMatch = findMatchingMelody(loadMelody(currentPath.c_str(), filename));
-      Serial.println("La mélodie la plus similaire est : ");
+      
+      // Affiche toutes les valeurs
       for (const auto& match : bestMatch) {
         Serial.print("Fichier: ");
         Serial.print(match.first);
         Serial.print(" | Score: ");
         Serial.println(match.second);
+      }
+
+      // Trouve la meilleure et l'affiche  
+      if (!bestMatch.empty()) {
+        auto maxElement = std::max_element(bestMatch.begin(), bestMatch.end(), 
+                                           [](const std::pair<String, float>& a, const std::pair<String, float>& b) {
+                                             return a.second < b.second;
+                                           });
+        String detectedSong = maxElement->first;
+        detectedSong.replace(".csv", ""); // Remove the .csv extension
+        float maxScore = maxElement->second;
+        Serial.print("La chanson détectée est ");
+        Serial.print(detectedSong);
+        Serial.print(" avec un score de corrélation de ");
+        Serial.println(maxScore);
+      } else {
+        Serial.println("Aucune correspondance trouvée.");
       }
 
     } else if (command == "delete") { // delete file
@@ -114,6 +132,8 @@ void handleCommand() {
 }
 
 void displayTools() {
+  Serial.println();
+  Serial.println("-----------------------------------------------------");
   Serial.println("Commandes disponibles :");
   Serial.println("record - Commence la capture audio");
   Serial.println("stop - Arrête la capture audio");
@@ -124,4 +144,7 @@ void displayTools() {
   Serial.println("delete - Supprime un fichier de la carte SD");
   Serial.println("dir - Change le répertoire courant");
   Serial.println("up - Remonte d'un répertoire");
+  Serial.println("help - Affiche les commandes disponibles");
+  Serial.println("-----------------------------------------------------");
+  Serial.println();
 }
