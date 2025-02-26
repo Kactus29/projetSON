@@ -1,11 +1,13 @@
 #ifndef CAPTURE_AUDIO_H
 #define CAPTURE_AUDIO_H
 
-#include <vector>
-#include <Audio.h>
+#include "include.h"
 
 void initMicrophone();
 void captureNote();
 std::vector<float> getCapturedNotes();
+
+void initOut();
+void playWavFile(const char* filename);
 
 #endif // CAPTURE_AUDIO_H

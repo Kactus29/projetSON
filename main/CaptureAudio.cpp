@@ -1,51 +1,122 @@
-#include <SerialFlash.h>
-#include <Audio.h>
-#include <Wire.h>
-#include <SPI.h>
-#include <SD.h>
+#include "include.h"
+
 //--------------------------------------------------------------------------------------- 
-// Créer des objets pour la capture audio et l'analyse de fréquence
 AudioInputI2S             in;           // Entrée audio via I2S
 AudioControlSGTL5000      audioShield;  // Gestion de la saturation
 AudioAmplifier            amp;          // Amplificateur audio
 AudioAnalyzeNoteFrequency notefreq;     // Analyseur de fréquence de note
-//---------------------------------------------------------------------------------------
 AudioConnection patchCord1(in, 0, amp, 0);        // Connexion entre l'entrée audio et l'amplificateur
 AudioConnection patchCord2(amp, 0, notefreq, 0);  // Connexion entre l'amplificateur et l'analyseur de fréquence
+float lastFrequency = 0.0; // Variable to store the last detected frequency
+extern unsigned long startTime; // Variable to store the start time of the melody
 //---------------------------------------------------------------------------------------
-std::vector<float> capturedNotes;
+AudioPlaySdWav           playWav;       // Player for WAV files
+AudioOutputI2S           out;           // Output to I2S
+AudioConnection          patchCord3(playWav, 0, out, 0);
+AudioConnection          patchCord4(playWav, 1, out, 1);
+float                    volume = 0.5;  // Initial volume
+//---------------------------------------------------------------------------------------
 
-// Fonction pour initialiser le microphone
+/**
+ * @brief Initialise le microphone et les composants audio.
+ * 
+ * Configure la mémoire audio, démarre l'analyseur de fréquence avec un seuil de 0.15
+ * et configure l'amplificateur avec un gain de 5.0.
+ */
 void initMicrophone() {
-  // Initialiser la mémoire audio
   AudioMemory(30);
-  // Démarrer l'analyseur de fréquence avec un seuil de 0.15
   notefreq.begin(0.15);
-  // Configurer l'amplificateur avec un gain de 5.0
   amp.gain(5.0);
+  
+  audioShield.enable();
+  audioShield.inputSelect(AUDIO_INPUT_MIC);
+  audioShield.micGain(20); // Augmenter le gain du microphone
+  audioShield.volume(1.0);
 }
 
-// Fonction pour capturer une note jouée
-void captureNote() {
-  // Vérifier si une nouvelle fréquence est disponible
+/**
+ * @brief Capture une note jouée et l'ajoute à la liste des notes capturées.
+ * 
+ * Vérifie si une nouvelle fréquence est disponible, lit la fréquence détectée et sa probabilité associée,
+ * puis ajoute la fréquence capturée à la liste des notes capturées. Affiche également la fréquence et la probabilité sur la console série.
+ * Si aucune nouvelle fréquence n'est détectée dans les 10 ms, stocke 0.
+ */
+ void captureNote() {
+  unsigned long currentTime = millis(); // Get the current time
+  unsigned long elapsedTime = currentTime - startTime; // Calculate elapsed time
+
   if (notefreq.available()) {
-    // Lire la fréquence détectée et sa probabilité associée
-    float frequency = notefreq.read();
+    lastFrequency = notefreq.read();
     float probability = notefreq.probability();
-    // Ajouter la fréquence capturée à la liste
-    capturedNotes.push_back(frequency);
-    // Afficher la fréquence et la probabilité sur la console série
-    Serial.print("Fréquence détectée : ");
-    Serial.print(frequency);
+    Serial.print("Temps écoulé : ");
+    Serial.print(elapsedTime);
+    Serial.print(" ms | Fréquence détectée : ");
+    Serial.print(lastFrequency);
     Serial.print(" Hz | Probabilité : ");
     Serial.println(probability);
   } else {
-    // Afficher un message si aucune fréquence n'est disponible
-    // Serial.println("Aucune fréquence détectée."); ==> trop de spam console
+    lastFrequency = 0.0; // No new frequency detected, set to 0
+    Serial.print("Temps écoulé : ");
+    Serial.print(elapsedTime);
+    Serial.print(" ms | Fréquence détectée : ");
+    Serial.print(lastFrequency);
+    Serial.println(" Hz | Probabilité : 0.0");
   }
+  capturedNotes.push_back(lastFrequency);
 }
 
-// Fonction pour retourner la liste des notes capturées
+/**
+ * @brief Retourne la liste des notes capturées.
+ * 
+ * @return std::vector<float> Liste des fréquences des notes capturées.
+ */
 std::vector<float> getCapturedNotes() {
   return capturedNotes;
+}
+
+/**
+ * @brief Initialise la lecture de fichiers WAV depuis la carte SD.
+ * 
+ * Configure les broches du bouton et du potentiomètre, puis initialise la lecture de fichiers WAV.
+ */
+void initOut() {
+  pinMode(1, INPUT_PULLUP);}
+
+/**
+ * @brief Joue un fichier WAV depuis le répertoire courant.
+ * 
+ * @param filename Nom du fichier WAV à jouer.
+ */
+void playWavFile(const char* filename) {
+  if (!SD.exists(filename)) {
+    Serial.print("Erreur : Le fichier ");
+    Serial.print(filename);
+    Serial.println(" n'existe pas.");
+    return;
+  }
+  Serial.print("Lecture du fichier : ");
+  Serial.println(filename);
+  if (playWav.isPlaying()) {
+    playWav.stop();
+  }
+  playWav.play(filename);
+  
+  while (playWav.isPlaying()) {
+    int SensorValue = analogRead(A0);
+    Serial.println(SensorValue);
+    volume = SensorValue / 1023.0;
+    Serial.println(volume);
+    audioShield.volume(volume);
+    
+    if (digitalRead(1)) {
+      playWav.stop();
+      Serial.println("Lecture arrêtée par l'utilisateur.");
+      break;
+    }
+    
+    delay(100);
+  }
+  
+  Serial.print("Fin de lecture du fichier : ");
+  Serial.println(filename);
 }

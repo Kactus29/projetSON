@@ -1,12 +1,13 @@
 #ifndef STORE_MELODY_H
 #define STORE_MELODY_H
 
-#include <vector>
-#include <Arduino.h>
+#include "include.h"
 
+void setup();
 void initStorage();
-void storeMelody(const std::vector<float>& melody, const char* filename);
-std::vector<float> loadMelody(const char* filename);
-std::vector<String> getStoredMelodies();
+void storeMelody(const std::vector<float>& melody, const char* path, const char* filename);
+std::vector<float> loadMelody(const char* path, const char* filename);
+std::vector<String> getStoredMelodies(const char* path);
+std::vector<String> getStoredDirectories(const char* path);
 
 #endif // STORE_MELODY_H
