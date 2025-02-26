@@ -5,7 +5,14 @@ AudioPlaySdWav           playWav;       // Player for WAV files
 AudioOutputI2S           out;           // Output to I2S
 AudioConnection          patchCord3(playWav, 0, out, 0);
 AudioConnection          patchCord4(playWav, 1, out, 1);
+AudioControlSGTL5000     sgtl5000_1;    // Audio shield
 //---------------------------------------------------------------------------------------
+
+void initAudio() {
+  AudioMemory(8);
+  sgtl5000_1.enable();
+  sgtl5000_1.volume(0.5);
+}
 
 /**
  * @brief Joue un fichier WAV depuis le répertoire courant.

@@ -4,5 +4,6 @@
 #include "include.h"
 
 void playWavFile(const char* filename);
+void initAudio();
 
 #endif // PLAY_WAV_H
