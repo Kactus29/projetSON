@@ -3,6 +3,22 @@
 //---------------------------------------------------------------------------------------
 
 /**
+ * @brief Normalise un vecteur de fréquences.
+ * 
+ * @param v Vecteur de fréquences à normaliser.
+ * @return std::vector<float> Vecteur normalisé.
+ */
+std::vector<float> normalize(const std::vector<float>& v) {
+    std::vector<float> normalized_v = v;
+    float mean = std::accumulate(v.begin(), v.end(), 0.0) / v.size();
+    float max_val = *std::max_element(v.begin(), v.end());
+    float min_val = *std::min_element(v.begin(), v.end());
+    float range = (max_val - min_val == 0) ? 1.0 : (max_val - min_val);
+    for (float& x : normalized_v) x = (x - mean) / range;
+    return normalized_v;
+}
+
+/**
  * @brief Trouve les mélodies stockées qui correspondent aux notes capturées.
  * 
  * @param capturedNotes Notes capturées par le microphone.
@@ -35,16 +51,6 @@ float calculateCorrelation(const std::vector<float>& a, const std::vector<float>
     int m = b.size();
     
     if (n == 0 || m == 0) return 0.0; // Éviter les erreurs sur des vecteurs vides
-
-    // Normalisation des vecteurs
-    auto normalize = [](std::vector<float> v) {
-        float mean = std::accumulate(v.begin(), v.end(), 0.0) / v.size();
-        float max_val = *std::max_element(v.begin(), v.end());
-        float min_val = *std::min_element(v.begin(), v.end());
-        float range = (max_val - min_val == 0) ? 1.0 : (max_val - min_val);
-        for (float& x : v) x = (x - mean) / range;
-        return v;
-    };
 
     std::vector<float> norm_a = normalize(a);
     std::vector<float> norm_b = normalize(b);
