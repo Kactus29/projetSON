@@ -3,22 +3,6 @@
 //---------------------------------------------------------------------------------------
 
 /**
- * @brief Compare deux mélodies pour vérifier si elles correspondent.
- * 
- * @param capturedNotes Notes capturées par le microphone.
- * @param storedMelody Mélodie stockée à comparer.
- * @return true si les mélodies correspondent, false sinon.
- */
-bool compareMelodies(const std::vector<float>& capturedNotes, const std::vector<float>& storedMelody) {
-    if (capturedNotes.size() != storedMelody.size()) {
-        return false;
-    }
-
-    float correlation = calculateCorrelation(capturedNotes, storedMelody);
-    return correlation > 0.8; // Seuil de corrélation pour considérer les mélodies comme correspondantes
-}
-
-/**
  * @brief Trouve les mélodies stockées qui correspondent aux notes capturées.
  * 
  * @param capturedNotes Notes capturées par le microphone.

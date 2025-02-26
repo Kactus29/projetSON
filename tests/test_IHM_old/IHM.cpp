@@ -106,6 +106,9 @@ void handleCommand() {
       }
       Serial.print("Chemin actuel: ");
       Serial.println(currentPath);
+
+    } else if (command == "help") {
+      displayTools();
     }
   }
 }
