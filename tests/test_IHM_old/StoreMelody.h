@@ -3,6 +3,7 @@
 
 #include "include.h"
 
+void setup();
 void initStorage();
 void storeMelody(const std::vector<float>& melody, const char* path, const char* filename);
 std::vector<float> loadMelody(const char* path, const char* filename);
