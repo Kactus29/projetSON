@@ -82,7 +82,7 @@ std::vector<float> getCapturedNotes() {
  * Configure les broches du bouton et du potentiomètre, puis initialise la lecture de fichiers WAV.
  */
 void initOut() {
-  pinMode(buttonPin, INPUT_PULLUP);
+  pinMode(buttonPin, INPUT);
 }
 
 /**
