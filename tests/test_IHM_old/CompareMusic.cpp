@@ -27,6 +27,8 @@ std::vector<std::pair<String, float>> findMatchingMelody(const std::vector<float
     std::vector<std::pair<String, float>> results;
 
     for (String melodyFile : storedMelodies) {
+        if (!melodyFile.endsWith(".csv")) continue; // Skip non-csv files
+
         std::vector<float> storedMelody = loadMelody(path, melodyFile.c_str());
         if (storedMelody.empty() || storedMelody == capturedNotes) continue; // Skip if the melody is the same as captured
 
