@@ -108,10 +108,12 @@ void playWavFile(const char* filename) {
   while (playWav.isPlaying()) {
     // Adjust volume based on potentiometer
     volume = analogRead(potPin) / 1023.0;
+    Serial.print("Volume : ");
+    Serial.println(volume);
     audioShield.volume(volume);
     
     // Check if button is pressed to stop playback
-    if (digitalRead(buttonPin) == LOW) {
+    if (digitalRead(buttonPin)) {
       playWav.stop();
       Serial.println("Lecture arrêtée par l'utilisateur.");
       break;
