@@ -4,5 +4,6 @@
 #include "include.h"
 
 void handleCommand();
+void displayTools();
 
 #endif // IHM_H

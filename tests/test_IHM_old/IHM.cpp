@@ -109,3 +109,16 @@ void handleCommand() {
     }
   }
 }
+
+void displayTools() {
+  Serial.println("Commandes disponibles :");
+  Serial.println("record - Commence la capture audio");
+  Serial.println("stop - Arrête la capture audio");
+  Serial.println("save - Sauvegarde la mélodie capturée sur la carte SD");
+  Serial.println("load - Charge une mélodie depuis la carte SD");
+  Serial.println("ls - Liste les mélodies et répertoires stockés");
+  Serial.println("compare - Compare la mélodie capturée avec celles stockées");
+  Serial.println("delete - Supprime un fichier de la carte SD");
+  Serial.println("dir - Change le répertoire courant");
+  Serial.println("up - Remonte d'un répertoire");
+}
