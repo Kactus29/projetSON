@@ -20,9 +20,7 @@ extern bool capturing;
 extern char filename[128];
 extern char directory[128];
 extern char path[256];
-extern float volume;
-extern const int potPin;
-extern const int buttonPin;
+
 
 #include "GestionAudio.h"
 #include "StoreMelody.h"
