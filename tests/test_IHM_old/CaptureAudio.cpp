@@ -5,13 +5,19 @@ AudioInputI2S             in;           // Entrée audio via I2S
 AudioControlSGTL5000      audioShield;  // Gestion de la saturation
 AudioAmplifier            amp;          // Amplificateur audio
 AudioAnalyzeNoteFrequency notefreq;     // Analyseur de fréquence de note
-//---------------------------------------------------------------------------------------
 AudioConnection patchCord1(in, 0, amp, 0);        // Connexion entre l'entrée audio et l'amplificateur
 AudioConnection patchCord2(amp, 0, notefreq, 0);  // Connexion entre l'amplificateur et l'analyseur de fréquence
-//---------------------------------------------------------------------------------------
-
 float lastFrequency = 0.0; // Variable to store the last detected frequency
 extern unsigned long startTime; // Variable to store the start time of the melody
+//---------------------------------------------------------------------------------------
+AudioPlaySdWav           playWav;       // Player for WAV files
+AudioOutputI2S           out;           // Output to I2S
+AudioConnection          patchCord3(playWav, 0, out, 0);
+AudioConnection          patchCord4(playWav, 1, out, 1);
+float                    volume = 0.5;  // Initial volume
+const int                potPin = A0;   // Potentiometer pin
+const int                buttonPin = 1; // Button pin
+//---------------------------------------------------------------------------------------
 
 /**
  * @brief Initialise le microphone et les composants audio.
@@ -68,4 +74,52 @@ void initMicrophone() {
  */
 std::vector<float> getCapturedNotes() {
   return capturedNotes;
+}
+
+/**
+ * @brief Initialise la lecture de fichiers WAV depuis la carte SD.
+ * 
+ * Configure les broches du bouton et du potentiomètre, puis initialise la lecture de fichiers WAV.
+ */
+void initOut() {
+  pinMode(buttonPin, INPUT_PULLUP);
+}
+
+/**
+ * @brief Joue un fichier WAV depuis le répertoire courant.
+ * 
+ * @param filename Nom du fichier WAV à jouer.
+ */
+void playWavFile(const char* filename) {
+  if (!SD.exists(filename)) {
+    Serial.print("Erreur : Le fichier ");
+    Serial.print(filename);
+    Serial.println(" n'existe pas.");
+    return;
+  }
+  Serial.print("Lecture du fichier : ");
+  Serial.println(filename);
+  if (playWav.isPlaying()) {
+    playWav.stop();
+  }
+  playWav.play(filename);
+  
+  // Wait until the WAV file finishes playing
+  while (playWav.isPlaying()) {
+    // Adjust volume based on potentiometer
+    volume = analogRead(potPin) / 1023.0;
+    audioShield.volume(volume);
+    
+    // Check if button is pressed to stop playback
+    if (digitalRead(buttonPin) == LOW) {
+      playWav.stop();
+      Serial.println("Lecture arrêtée par l'utilisateur.");
+      break;
+    }
+    
+    delay(100); // Small delay to avoid busy-waiting
+  }
+  
+  Serial.print("Fin de lecture du fichier : ");
+  Serial.println(filename);
 }

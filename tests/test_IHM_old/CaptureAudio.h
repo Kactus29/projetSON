@@ -7,4 +7,7 @@ void initMicrophone();
 void captureNote();
 std::vector<float> getCapturedNotes();
 
+void initOut();
+void playWavFile(const char* filename);
+
 #endif // CAPTURE_AUDIO_H
