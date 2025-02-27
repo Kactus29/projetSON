@@ -90,6 +90,14 @@ void handleCommand() {
         Serial.print(" avec un score de corrélation de ");
         Serial.println(maxScore);
 
+        // Process the detected song name
+        if (detectedSong.startsWith("test_")) {
+          detectedSong = detectedSong.substring(5); // Remove "test_" prefix
+        }
+        while (detectedSong.length() > 0 && isDigit(detectedSong.charAt(detectedSong.length() - 1))) {
+          detectedSong.remove(detectedSong.length() - 1); // Remove trailing digits
+        }
+
         // Play the detected song
         detectedSong += ".wav"; // Append .wav extension
         playWavFile(detectedSong.c_str());
