@@ -1,6 +1,6 @@
 #include "include.h"
 
-unsigned long startTime = 0; // Variable to store le start time
+unsigned long startTime = 0;
 
 void handleCommand() {
   char filename[64] = "";
@@ -17,11 +17,14 @@ void handleCommand() {
       startTime = millis();
       captureTimer.begin(captureNote, 100 * 1000); // 100 ms
       Serial.println("Capture commencée.");
+      Serial.println("Tapez 'stop' pour arrêter la capture.");
+      Serial.println();
       
     } else if (command == "stop") {  // end capture
       capturing = false;
       captureTimer.end();
       Serial.println("Capture terminée.");
+      Serial.println();
       std::vector<float> notes = getCapturedNotes();
       for (float note : notes) {
         Serial.println(note);
@@ -29,6 +32,7 @@ void handleCommand() {
 
     } else if (command == "save") {  // write melody to SD
       Serial.println("Entrez le nom du fichier (avec extension .csv) :");
+      Serial.println();
       while (!Serial.available()) {}
       Serial.readBytesUntil('\n', filename, sizeof(filename));
       filename[sizeof(filename) - 1] = '\0';
@@ -37,6 +41,7 @@ void handleCommand() {
 
     } else if (command == "load") { // read melody from SD
       Serial.println("Entrez le nom du fichier (avec extension .csv) :");
+      Serial.println();
       while (!Serial.available()) {}
       Serial.readBytesUntil('\n', filename, sizeof(filename));
       filename[sizeof(filename) - 1] = '\0';
@@ -62,6 +67,7 @@ void handleCommand() {
 
     } else if (command == "compare") { // compare music
       Serial.println("Entrez le nom du fichier cible (avec extension .csv) :");
+      Serial.println();
       while (!Serial.available()) {}
       Serial.readBytesUntil('\n', filename, sizeof(filename));
       filename[sizeof(filename) - 1] = '\0';
@@ -102,7 +108,8 @@ void handleCommand() {
         detectedSong += ".wav"; // Append .wav extension
         playWavFile(detectedSong.c_str());
       } else {
-        Serial.println("Aucune correspondance trouvée.");
+        Serial.println("Aucune correspondance trouvée. Erreur dans le nomage du fichier");
+        Serial.println(detectedSong);
       }
 
     } else if (command == "delete") { // delete file

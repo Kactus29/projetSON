@@ -103,9 +103,9 @@ void playWavFile(const char* filename) {
   
   while (playWav.isPlaying()) {
     int SensorValue = analogRead(A0);
-    Serial.println(SensorValue);
+    // Serial.println(SensorValue);
     volume = SensorValue / 1023.0;
-    Serial.println(volume);
+    // Serial.println(volume);
     audioShield.volume(volume);
     
     if (digitalRead(1)) {
