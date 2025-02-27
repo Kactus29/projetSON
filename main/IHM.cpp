@@ -74,6 +74,12 @@ void handleCommand() {
       snprintf(tempPath, sizeof(tempPath), "%s/%s", currentPath.c_str(), filename);
       std::vector<std::pair<String, float>> bestMatch = findMatchingMelody(loadMelody(currentPath.c_str(), filename));
       
+      // Sort the matches by score in ascending order
+      std::sort(bestMatch.begin(), bestMatch.end(), 
+                [](const std::pair<String, float>& a, const std::pair<String, float>& b) {
+                  return a.second < b.second;
+                });
+
       // Affiche toutes les valeurs
       for (const auto& match : bestMatch) {
         Serial.print("Fichier: ");
@@ -84,13 +90,10 @@ void handleCommand() {
 
       // Trouve la meilleure et l'affiche  
       if (!bestMatch.empty()) {
-        auto maxElement = std::max_element(bestMatch.begin(), bestMatch.end(), 
-                                           [](const std::pair<String, float>& a, const std::pair<String, float>& b) {
-                                             return a.second < b.second;
-                                           });
-        String detectedSong = maxElement->first;
+        auto maxElement = bestMatch.back(); // Get the last element after sorting
+        String detectedSong = maxElement.first;
         detectedSong.replace(".csv", ""); // Remove the .csv extension
-        float maxScore = maxElement->second;
+        float maxScore = maxElement.second;
         Serial.print("La chanson détectée est ");
         Serial.print(detectedSong);
         Serial.print(" avec un score de corrélation de ");
@@ -109,7 +112,6 @@ void handleCommand() {
         playWavFile(detectedSong.c_str());
       } else {
         Serial.println("Aucune correspondance trouvée. Erreur dans le nomage du fichier");
-        Serial.println(detectedSong);
       }
 
     } else if (command == "delete") { // delete file
