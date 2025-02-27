@@ -26,6 +26,12 @@ std::vector<std::pair<String, float>> findMatchingMelody(const std::vector<float
     std::vector<String> storedMelodies = getStoredMelodies(path);
     std::vector<std::pair<String, float>> results;
 
+    int n = 0;
+    for (String melodyFile : storedMelodies) {
+        if (!melodyFile.endsWith(".csv")) continue; // Skip non-csv files
+        n++;
+    }
+    int i = 1;
     for (String melodyFile : storedMelodies) {
         if (!melodyFile.endsWith(".csv")) continue; // Skip non-csv files
 
@@ -34,6 +40,10 @@ std::vector<std::pair<String, float>> findMatchingMelody(const std::vector<float
 
         float score = calculateCorrelation(capturedNotes, storedMelody);
         results.push_back(std::make_pair(melodyFile, score));
+        Serial.print("Comparaison en cours : ");
+        Serial.print(i*100/n);
+        Serial.println("%");
+        i++;
     }
 
     return results;

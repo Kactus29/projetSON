@@ -3,6 +3,7 @@
 
 #include "include.h"
 
+void initIHM();
 void handleCommand();
 void startCapture();
 void stopCapture();

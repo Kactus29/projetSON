@@ -2,15 +2,30 @@
 
 unsigned long startTime = 0;
 
+void initIHM() {
+  pinMode(0, INPUT);
+  pinMode(1, INPUT);
+  displayTools();
+}
+
 void handleCommand() {
   String currentPath = "";
-
+  if (digitalRead(0)) {
+    if (!capturing) {
+      startCapture();
+    } else {
+      stopCapture();
+    }
+  }
+  if (digitalRead(1)) {
+    playMelody();
+  }
   if (Serial.available()) {
     String command = Serial.readStringUntil('\n');
     command.trim();
-    if (digitalRead(0) || (command == "record") || (command == "start") || (command == "capture") || (command == "begin") || (command == "go") || (command == "commence") || (command == "commencer") || (command == "start") || (command == "s") || (command == "rec")) {          
+    if ((command == "record") || (command == "start") || (command == "capture") || (command == "begin") || (command == "go") || (command == "commence") || (command == "commencer") || (command == "start") || (command == "s") || (command == "rec")) {          
       startCapture();
-    } else if (digitalRead(0) || (command == "stop") || (command == "end") || (command == "finish") || (command == "e")) {
+    } else if ((command == "stop") || (command == "end") || (command == "finish") || (command == "e")) {
       stopCapture();
     } else if ((command == "save") || (command == "store") || (command == "write") || (command == "w")) {
       saveMelody();
@@ -20,13 +35,13 @@ void handleCommand() {
       listStoredMelodies();
     } else if ((command == "compare") || (command == "match") || (command == "c")) {
       compareMelody();
-    } else if ((command == "delete") || (command == "remove") || (command == "rm")) || (command == "d")) {
+    } else if ((command == "delete") || (command == "remove") || (command == "rm") || (command == "d")) {
       deleteFile();
     // } else if ((command == "dir") || (command == "cd")) {
     //   changeDirectory();
     // } else if ((command == "up") || (command == "cd ..")) {
     //   moveUpDirectory();
-    } else if (digitalRead(1) || (command == "play") || (command == "p")) {
+    } else if ((command == "play") || (command == "p")) {
       playMelody();
     } else if ((command == "help") || (command == "h")) {
       displayTools();
@@ -36,6 +51,7 @@ void handleCommand() {
 
 void startCapture() {
   capturing = true;
+  delay(300);
   capturedNotes.clear();
   startTime = millis();
   captureTimer.begin(captureNote, 100 * 1000); // 100 ms
@@ -48,6 +64,7 @@ void startCapture() {
 
 void stopCapture() {
   capturing = false;
+  delay(300);
   captureTimer.end();
   Serial.println("Capture terminée.");
   Serial.println();

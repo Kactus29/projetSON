@@ -25,15 +25,16 @@ void initStorage() {
   Serial.begin(9600);
   Serial.println();
   Serial.println("-----------------------------------------------------");
-  Serial.println("Initialisation de la carte SD...");
+  Serial.println();
+  Serial.println("Bienvenue dans MelodyFinder, votre système d'enregistrement, comparaison et stockage de mélodies !");
 
   init = card.init(SPI_FULL_SPEED, SDCARD_CS_PIN);
   begin = SD.begin(SDCARD_CS_PIN);
   if (!init || !begin) {
-    Serial.println("Échec de l'initialisation");
+    Serial.println("Accès à la carte SD impossible, retirez la carte et réinsérez-la, puis réinitialisez le système");
     return;
   }
-  Serial.println("Initialisation réussie");
+  // Serial.println("Initialisation réussie");
 }
 
 /**

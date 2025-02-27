@@ -7,8 +7,8 @@ void setup() {
   initMicrophone();
   // Initialiser la lecture de fichiers WAV
   initOut();
-  // Afficher les commandes
-  displayTools();
+  // Initialiser l'IHM
+  initIHM();
 }
 
 void loop() {
