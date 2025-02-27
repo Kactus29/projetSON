@@ -23,17 +23,17 @@ void initStorage() {
   SPI.setSCK(SDCARD_SCK_PIN);
 
   Serial.begin(9600);
-  Serial.println("------------");
+  Serial.println();
+  Serial.println("-----------------------------------------------------");
   Serial.println("Initialisation de la carte SD...");
-  Serial.println("------------");
 
   init = card.init(SPI_FULL_SPEED, SDCARD_CS_PIN);
   begin = SD.begin(SDCARD_CS_PIN);
   if (!init || !begin) {
-    Serial.println("Échec de l'initialisation !");
+    Serial.println("Échec de l'initialisation");
     return;
   }
-  Serial.println("Initialisation réussie.");
+  Serial.println("Initialisation réussie");
 }
 
 /**
@@ -76,7 +76,6 @@ std::vector<float> loadMelody(const char* path, const char* filename) {
     melody.push_back(file.parseFloat());
   }
   file.close();
-  Serial.println("Mélodie chargée avec succès.");
   return melody;
 }
 

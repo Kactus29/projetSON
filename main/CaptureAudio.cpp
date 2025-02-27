@@ -80,7 +80,8 @@ std::vector<float> getCapturedNotes() {
  * Configure les broches du bouton et du potentiomètre, puis initialise la lecture de fichiers WAV.
  */
 void initOut() {
-  pinMode(1, INPUT_PULLUP);}
+  pinMode(0, INPUT);
+  pinMode(1, INPUT);}
 
 /**
  * @brief Joue un fichier WAV depuis le répertoire courant.
